@@ -1,4 +1,4 @@
-module github.com/mrjoshuak/readabiligo
+module github.com/Sagleft/readabiligo
 
 go 1.24.1
 

@@ -44,13 +44,13 @@ type ContentType int
 // These constants no longer affect the extraction behavior.
 // Deprecated: These constants no longer affect extraction behavior.
 const (
-	ContentTypeUnknown ContentType = iota
-	ContentTypeReference  // Wikipedia, documentation
-	ContentTypeArticle    // News, blog posts
-	ContentTypeTechnical  // Code examples, tech blogs
-	ContentTypeError      // Error pages, 404s
-	ContentTypeMinimal    // Login pages, etc.
-	ContentTypePaywall    // Paywalled content
+	ContentTypeUnknown   ContentType = iota
+	ContentTypeReference             // Wikipedia, documentation
+	ContentTypeArticle               // News, blog posts
+	ContentTypeTechnical             // Code examples, tech blogs
+	ContentTypeError                 // Error pages, 404s
+	ContentTypeMinimal               // Login pages, etc.
+	ContentTypePaywall               // Paywalled content
 )
 
 // String returns a string representation of the content type
@@ -77,13 +77,13 @@ func (ct ContentType) String() string {
 // It controls whether to include content digests and node indexes,
 // and sets limits on buffer size and extraction timeout.
 type ExtractionOptions struct {
-	ContentDigests       bool          // Add content digest attributes
-	NodeIndexes          bool          // Add node index attributes
-	MaxBufferSize        int           // Maximum buffer size for content processing
-	Timeout              time.Duration // Timeout for extraction process
-	PreserveImportantLinks bool        // Preserve important links in cleaned elements (like "More information...")
-	DetectContentType    bool          // Deprecated: No longer has any effect, maintained for backward compatibility
-	ContentType          ContentType   // Deprecated: No longer has any effect, maintained for backward compatibility
+	ContentDigests         bool          // Add content digest attributes
+	NodeIndexes            bool          // Add node index attributes
+	MaxBufferSize          int           // Maximum buffer size for content processing
+	Timeout                time.Duration // Timeout for extraction process
+	PreserveImportantLinks bool          // Preserve important links in cleaned elements (like "More information...")
+	DetectContentType      bool          // Deprecated: No longer has any effect, maintained for backward compatibility
+	ContentType            ContentType   // Deprecated: No longer has any effect, maintained for backward compatibility
 }
 
 // DefaultOptions returns the default extraction options.
@@ -94,13 +94,13 @@ type ExtractionOptions struct {
 // as the implementation now uses Mozilla's unified algorithm for all content.
 func DefaultOptions() ExtractionOptions {
 	return ExtractionOptions{
-		ContentDigests:       false,
-		NodeIndexes:          false,
-		MaxBufferSize:        1024 * 1024, // 1MB
-		Timeout:              time.Second * 30,
-		PreserveImportantLinks: false, // Default to false to match ReadabiliPy behavior
-		DetectContentType:    false,   // No-op but set to false for clarity
-		ContentType:          ContentTypeArticle, // No-op but set to Article for clarity
+		ContentDigests:         false,
+		NodeIndexes:            false,
+		MaxBufferSize:          1024 * 1024, // 1MB
+		Timeout:                time.Second * 30,
+		PreserveImportantLinks: false,              // Default to false to match ReadabiliPy behavior
+		DetectContentType:      false,              // No-op but set to false for clarity
+		ContentType:            ContentTypeArticle, // No-op but set to Article for clarity
 	}
 }
 

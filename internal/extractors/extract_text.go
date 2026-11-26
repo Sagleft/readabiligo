@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/mrjoshuak/readabiligo/internal/simplifiers"
+	"github.com/Sagleft/readabiligo/internal/simplifiers"
 )
 
 // Block represents a text block

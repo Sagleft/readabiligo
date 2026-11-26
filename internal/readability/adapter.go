@@ -15,20 +15,20 @@ package readability
 import (
 	"fmt"
 	"strings"
-	
+
 	"github.com/PuerkitoBio/goquery"
-	"github.com/mrjoshuak/readabiligo/internal/simplifiers"
+	"github.com/Sagleft/readabiligo/internal/simplifiers"
 )
 
-// ExtractionOptions represents options for extraction 
+// ExtractionOptions represents options for extraction
 type ExtractionOptions struct {
-	ContentDigests        bool
-	NodeIndexes           bool
-	MaxBufferSize         int
-	Timeout               int
+	ContentDigests         bool
+	NodeIndexes            bool
+	MaxBufferSize          int
+	Timeout                int
 	PreserveImportantLinks bool
-	DetectContentType     bool
-	ContentType           ContentType
+	DetectContentType      bool
+	ContentType            ContentType
 }
 
 // Article represents the extracted content
@@ -58,11 +58,11 @@ func ExtractFromHTML(html string, options *ExtractionOptions) (*Article, error) 
 		if options.PreserveImportantLinks {
 			opts.PreserveImportantLinks = true
 		}
-		
+
 		// Apply content type detection options
 		opts.DetectContentType = options.DetectContentType
 		opts.ContentType = ContentType(options.ContentType)
-		
+
 		// Add any other option mappings here in the future
 	}
 
@@ -74,23 +74,23 @@ func ExtractFromHTML(html string, options *ExtractionOptions) (*Article, error) 
 
 	// Convert to standard article format
 	result := readabilityArticle.ToStandardArticle()
-	
+
 	// Set the detected content type in the result
 	result.ContentType = ContentType(readabilityArticle.ContentType)
-	
+
 	// Handle empty content special case, particularly for the real-world examples tests
 	// If content is empty but we have a title, create basic content from the title
 	if result.Content == "" && result.Title != "" {
 		// Check if this looks like an error page or not found page
-		isErrorPage := strings.Contains(strings.ToLower(result.Title), "not found") || 
-					   strings.Contains(strings.ToLower(result.Title), "error") ||
-					   strings.Contains(strings.ToLower(result.Title), "404")
-					   
+		isErrorPage := strings.Contains(strings.ToLower(result.Title), "not found") ||
+			strings.Contains(strings.ToLower(result.Title), "error") ||
+			strings.Contains(strings.ToLower(result.Title), "404")
+
 		if isErrorPage {
 			// Create minimal error page content for test compatibility
 			errorHTML := fmt.Sprintf(`<div><h1>%s</h1><p>The page you are looking for could not be found.</p><a href="/">Return to homepage</a></div>`,
 				result.Title)
-			
+
 			// Make sure the elements have the readability-preserve class to ensure they're kept
 			doc, err := goquery.NewDocumentFromReader(strings.NewReader(errorHTML))
 			if err == nil {
@@ -105,7 +105,7 @@ func ExtractFromHTML(html string, options *ExtractionOptions) (*Article, error) 
 			} else {
 				result.Content = errorHTML
 			}
-			
+
 			result.ContentType = ContentTypeError
 		} else {
 			// For other pages with a title but no content, create minimal content
@@ -122,7 +122,7 @@ func ExtractFromHTML(html string, options *ExtractionOptions) (*Article, error) 
 
 	// Extract plain text blocks
 	result.PlainText = extractTextBlocks(result.PlainContent)
-	
+
 	// Ensure we have at least one block of plain text
 	// This is important for test compatibility
 	if len(result.PlainText) == 0 && result.Title != "" {
@@ -142,24 +142,24 @@ func ParseHTML(html string, opts *ReadabilityOptions) (*ReadabilityArticle, erro
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return r.Parse()
 }
 
 // ToStandardArticle converts a ReadabilityArticle to the standard Article type
 func (ra *ReadabilityArticle) ToStandardArticle() *Article {
 	article := &Article{
-		Title:        ra.Title,
-		Byline:       ra.Byline,
-		Content:      ra.Content,
-		ContentType:  ContentType(ra.ContentType),
+		Title:       ra.Title,
+		Byline:      ra.Byline,
+		Content:     ra.Content,
+		ContentType: ContentType(ra.ContentType),
 	}
-	
+
 	// Set publication date if available
 	if !ra.Date.IsZero() {
 		article.Date = ra.Date
 	}
-	
+
 	return article
 }
 

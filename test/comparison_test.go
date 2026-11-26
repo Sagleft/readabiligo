@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/mrjoshuak/readabiligo"
+	"github.com/Sagleft/readabiligo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -68,7 +68,7 @@ func TestComparisonWithPythonBasic(t *testing.T) {
 	}
 }
 
-// TestComparisonWithRealWorldData tests Go implementation against Python 
+// TestComparisonWithRealWorldData tests Go implementation against Python
 // with real-world examples downloaded by the download_real_world_examples.sh script
 func TestComparisonWithRealWorldData(t *testing.T) {
 	// Skip if Python is not available
@@ -147,8 +147,8 @@ func TestComparisonWithReadabiliPyReferences(t *testing.T) {
 
 	// Set up test cases - files from the ReadabiliPy repository downloaded by the script
 	testCases := []struct {
-		name        string
-		htmlFile    string
+		name         string
+		htmlFile     string
 		expectedJSON string
 	}{
 		{"AddictingInfo", "addictinginfo.com-1_full_page.html", "addictinginfo.com-1_simple_article_from_full_page.json"},
@@ -162,7 +162,7 @@ func TestComparisonWithReadabiliPyReferences(t *testing.T) {
 			// Check if the test files exist
 			htmlPath := filepath.Join("data", tc.htmlFile)
 			jsonPath := filepath.Join("data", tc.expectedJSON)
-			
+
 			if _, err := os.Stat(htmlPath); os.IsNotExist(err) {
 				t.Skipf("HTML file %s does not exist. Run download_real_world_examples.sh first.", htmlPath)
 				return
@@ -216,14 +216,14 @@ func TestSystematicComparisonWithDifferentOptions(t *testing.T) {
 		config func() readabiligo.Extractor
 	}{
 		{"Default", func() readabiligo.Extractor { return readabiligo.New() }},
-		{"WithPreserveImportantLinks", func() readabiligo.Extractor { 
-			return readabiligo.New(readabiligo.WithPreserveImportantLinks(true)) 
+		{"WithPreserveImportantLinks", func() readabiligo.Extractor {
+			return readabiligo.New(readabiligo.WithPreserveImportantLinks(true))
 		}},
-		{"WithContentDigests", func() readabiligo.Extractor { 
-			return readabiligo.New(readabiligo.WithContentDigests(true)) 
+		{"WithContentDigests", func() readabiligo.Extractor {
+			return readabiligo.New(readabiligo.WithContentDigests(true))
 		}},
-		{"WithNodeIndexes", func() readabiligo.Extractor { 
-			return readabiligo.New(readabiligo.WithNodeIndexes(true)) 
+		{"WithNodeIndexes", func() readabiligo.Extractor {
+			return readabiligo.New(readabiligo.WithNodeIndexes(true))
 		}},
 	}
 
@@ -254,19 +254,19 @@ func TestSystematicComparisonWithDifferentOptions(t *testing.T) {
 
 					// Compare the results - focus on the parts that should be consistent
 					assert.Equal(t, baseline.Title, result.Title, "Titles should match")
-					
+
 					// For content, do a basic comparison - important links preservation will affect this
 					if config.name != "WithPreserveImportantLinks" {
 						// Check content length is roughly similar - allow for options-specific variations
 						baselineLen := len(baseline.Content)
 						resultLen := len(result.Content)
 						ratio := float64(resultLen) / float64(baselineLen)
-						
-						t.Logf("Content length - Baseline: %d, %s: %d, Ratio: %.2f", 
+
+						t.Logf("Content length - Baseline: %d, %s: %d, Ratio: %.2f",
 							baselineLen, config.name, resultLen, ratio)
-						
+
 						// Content length shouldn't vary too dramatically unless it's a special option
-						assert.True(t, ratio > 0.2 && ratio < 30.0, 
+						assert.True(t, ratio > 0.2 && ratio < 30.0,
 							"Content length ratio should be within reasonable bounds")
 					}
 				})
@@ -358,7 +358,7 @@ func TestContentTypeAwareExtraction(t *testing.T) {
 			} else {
 				htmlContent = createTestHTML(t, tc.htmlCase)
 			}
-			
+
 			htmlPath := filepath.Join(tempDir, tc.name+".html")
 			err := os.WriteFile(htmlPath, []byte(htmlContent), 0644)
 			assert.NoError(t, err)
@@ -395,46 +395,46 @@ func TestContentTypeAwareExtraction(t *testing.T) {
 				t.Logf("Auto-detect content length: %d", len(autoDetectContent))
 				t.Logf("Forced type content length: %d", len(forcedTypeContent))
 			}
-			
+
 			// For error pages, verify aggressive cleaning was applied
 			if tc.contentType == readabiligo.ContentTypeError {
 				// Parse the content to check for navigation elements
 				autoDetectDoc, _ := goquery.NewDocumentFromReader(strings.NewReader(autoDetectContent))
 				forcedTypeDoc, _ := goquery.NewDocumentFromReader(strings.NewReader(forcedTypeContent))
-				
+
 				// Count navigation elements
 				autoNavCount := autoDetectDoc.Find("nav, .nav, .navigation, .menu").Length()
 				forcedNavCount := forcedTypeDoc.Find("nav, .nav, .navigation, .menu").Length()
-				
-				t.Logf("Navigation elements - Auto-detect: %d, Forced Error type: %d", 
+
+				t.Logf("Navigation elements - Auto-detect: %d, Forced Error type: %d",
 					autoNavCount, forcedNavCount)
-				
+
 				// Error pages should have fewer navigation elements
-				assert.True(t, forcedNavCount <= autoNavCount, 
+				assert.True(t, forcedNavCount <= autoNavCount,
 					"Error page processing should remove more navigation elements")
 			}
-			
+
 			// For reference content, verify structure preservation
 			if tc.contentType == readabiligo.ContentTypeReference {
 				// Check heading and list preservation
 				autoDetectDoc, _ := goquery.NewDocumentFromReader(strings.NewReader(autoDetectContent))
 				forcedTypeDoc, _ := goquery.NewDocumentFromReader(strings.NewReader(forcedTypeContent))
-				
+
 				// Count headings and lists
 				autoHeadingCount := autoDetectDoc.Find("h1, h2, h3, h4, h5, h6").Length()
 				forcedHeadingCount := forcedTypeDoc.Find("h1, h2, h3, h4, h5, h6").Length()
 				autoListCount := autoDetectDoc.Find("ul, ol, li").Length()
 				forcedListCount := forcedTypeDoc.Find("ul, ol, li").Length()
-				
-				t.Logf("Headings - Auto-detect: %d, Forced Reference type: %d", 
+
+				t.Logf("Headings - Auto-detect: %d, Forced Reference type: %d",
 					autoHeadingCount, forcedHeadingCount)
-				t.Logf("List elements - Auto-detect: %d, Forced Reference type: %d", 
+				t.Logf("List elements - Auto-detect: %d, Forced Reference type: %d",
 					autoListCount, forcedListCount)
-				
+
 				// Reference content should preserve more structure
-				assert.True(t, forcedHeadingCount >= autoHeadingCount, 
+				assert.True(t, forcedHeadingCount >= autoHeadingCount,
 					"Reference content should preserve more headings")
-				assert.True(t, forcedListCount >= autoListCount, 
+				assert.True(t, forcedListCount >= autoListCount,
 					"Reference content should preserve more list elements")
 			}
 		})
@@ -528,7 +528,7 @@ with open(sys.argv[2], 'w', encoding='utf-8') as f:
 		return nil, err
 	}
 	defer os.Remove(scriptFile.Name())
-	
+
 	_, err = scriptFile.WriteString(pythonScript)
 	if err != nil {
 		return nil, err
@@ -572,12 +572,12 @@ func runGoReadability(html string) (map[string]interface{}, error) {
 
 	// Convert to map for comparison
 	result := map[string]interface{}{
-		"title":       article.Title,
-		"byline":      article.Byline,
-		"content":     article.Content,
+		"title":         article.Title,
+		"byline":        article.Byline,
+		"content":       article.Content,
 		"plain_content": article.PlainContent,
-		"plain_text":  article.PlainText,
-		"content_type": article.ContentType.String(),
+		"plain_text":    article.PlainText,
+		"content_type":  article.ContentType.String(),
 	}
 
 	return result, nil
@@ -588,15 +588,15 @@ func assertEqualOutput(t *testing.T, pythonOutput, goOutput map[string]interface
 	// Compare titles - exact match for titles when present
 	pythonTitle, hasPythonTitle := pythonOutput["title"].(string)
 	goTitle, hasGoTitle := goOutput["title"].(string)
-	
+
 	if hasPythonTitle && hasGoTitle {
 		// Allow for some normalization differences
 		normPythonTitle := normalizeWhitespace(pythonTitle)
 		normGoTitle := normalizeWhitespace(goTitle)
-		
+
 		// Log titles for debugging
 		t.Logf("Titles - Python: %q, Go: %q", normPythonTitle, normGoTitle)
-		
+
 		// Check if titles are identical or one contains the other
 		if normPythonTitle != normGoTitle {
 			if strings.Contains(normPythonTitle, normGoTitle) || strings.Contains(normGoTitle, normPythonTitle) {
@@ -618,12 +618,12 @@ func assertEqualOutput(t *testing.T, pythonOutput, goOutput map[string]interface
 	// while still being semantically equivalent.
 	pythonContent, hasPythonContent := pythonOutput["content"].(string)
 	goContent, hasGoContent := goOutput["content"].(string)
-	
+
 	if hasPythonContent && hasGoContent {
 		// Compare DOM structure rather than exact HTML string
 		compareDOMContent(t, pythonContent, goContent)
 	}
-	
+
 	// Check content length is roughly similar
 	// Allow for some variation due to whitespace differences, etc.
 	if hasPythonContent && hasGoContent {
@@ -631,7 +631,7 @@ func assertEqualOutput(t *testing.T, pythonOutput, goOutput map[string]interface
 		goLen := len(goContent)
 		ratio := float64(goLen) / float64(pythonLen)
 		t.Logf("Content length comparison - Go: %d, Python: %d, Ratio: %.2f", goLen, pythonLen, ratio)
-		
+
 		// Content length shouldn't vary too dramatically
 		assert.True(t, ratio > 0.2 && ratio < 30.0, "Content length ratio is outside reasonable bounds")
 	}
@@ -646,30 +646,30 @@ func compareDOMContent(t *testing.T, html1, html2 string) {
 		t.Errorf("Failed to parse first HTML: %v", err)
 		return
 	}
-	
+
 	doc2, err := goquery.NewDocumentFromReader(strings.NewReader(html2))
 	if err != nil {
 		t.Errorf("Failed to parse second HTML: %v", err)
 		return
 	}
-	
+
 	// Check for key elements
 	checkElementCount := func(selector string, description string) {
 		count1 := doc1.Find(selector).Length()
 		count2 := doc2.Find(selector).Length()
 		t.Logf("%s count - First: %d, Second: %d", description, count1, count2)
-		
+
 		// Don't fail the test if counts differ slightly
 		ratio := 1.0
 		if count1 > 0 && count2 > 0 {
 			ratio = float64(count2) / float64(count1)
 		}
-		
+
 		if ratio < 0.7 || ratio > 1.3 {
 			t.Logf("%s counts differ significantly", description)
 		}
 	}
-	
+
 	// Check various element types
 	checkElementCount("p", "Paragraph")
 	checkElementCount("a", "Link")
@@ -677,16 +677,16 @@ func compareDOMContent(t *testing.T, html1, html2 string) {
 	checkElementCount("img", "Image")
 	checkElementCount("ul, ol", "List")
 	checkElementCount("li", "List item")
-	
+
 	// Check text content length (without HTML tags)
 	text1 := doc1.Text()
 	text2 := doc2.Text()
-	
+
 	t.Logf("Plain text length - First: %d, Second: %d", len(text1), len(text2))
-	
+
 	// Text length should be roughly similar
 	textRatio := float64(len(text2)) / float64(len(text1))
-	assert.True(t, textRatio > 0.2 && textRatio < 10.0, 
+	assert.True(t, textRatio > 0.2 && textRatio < 10.0,
 		"Plain text length ratio is outside reasonable bounds")
 }
 
@@ -698,13 +698,13 @@ func compareDOMStructure(t *testing.T, html1, html2 string) {
 		t.Errorf("Failed to parse first HTML: %v", err)
 		return
 	}
-	
+
 	doc2, err := goquery.NewDocumentFromReader(strings.NewReader(html2))
 	if err != nil {
 		t.Errorf("Failed to parse second HTML: %v", err)
 		return
 	}
-	
+
 	// Compare structure by counting element types and checking nesting
 	compareStructuralProperties(t, doc1, doc2)
 }
@@ -712,22 +712,22 @@ func compareDOMStructure(t *testing.T, html1, html2 string) {
 // compareStructuralProperties compares structural properties of two documents
 func compareStructuralProperties(t *testing.T, doc1, doc2 *goquery.Document) {
 	// Compare element counts
-	elements := []string{"p", "a", "div", "span", "h1", "h2", "h3", "h4", "h5", "h6", 
+	elements := []string{"p", "a", "div", "span", "h1", "h2", "h3", "h4", "h5", "h6",
 		"img", "ul", "ol", "li", "table", "blockquote"}
-	
+
 	for _, elem := range elements {
 		count1 := doc1.Find(elem).Length()
 		count2 := doc2.Find(elem).Length()
-		
+
 		if count1 > 0 || count2 > 0 {
 			t.Logf("Element '%s' count - First: %d, Second: %d", elem, count1, count2)
 		}
 	}
-	
+
 	// Check if the main heading content matches
 	heading1 := doc1.Find("h1").First().Text()
 	heading2 := doc2.Find("h1").First().Text()
-	
+
 	if heading1 != "" && heading2 != "" {
 		if heading1 == heading2 {
 			t.Logf("Main headings match: %q", heading1)
@@ -735,34 +735,34 @@ func compareStructuralProperties(t *testing.T, doc1, doc2 *goquery.Document) {
 			t.Logf("Main headings differ - First: %q, Second: %q", heading1, heading2)
 		}
 	}
-	
+
 	// Compare total text content length
 	text1 := doc1.Text()
 	text2 := doc2.Text()
-	
+
 	textRatio := 1.0
 	if len(text1) > 0 && len(text2) > 0 {
 		textRatio = float64(len(text2)) / float64(len(text1))
 	}
-	
-	t.Logf("Text content length - First: %d, Second: %d, Ratio: %.2f", 
+
+	t.Logf("Text content length - First: %d, Second: %d, Ratio: %.2f",
 		len(text1), len(text2), textRatio)
-	
+
 	// Check if the text content has similar paragraphs
 	paragraphs1 := extractParagraphTexts(doc1)
 	paragraphs2 := extractParagraphTexts(doc2)
-	
+
 	t.Logf("Paragraph count - First: %d, Second: %d", len(paragraphs1), len(paragraphs2))
-	
+
 	// Compare a subset of paragraphs to see if they're similar
 	minLen := min(len(paragraphs1), len(paragraphs2))
 	minLen = min(minLen, 3) // Check up to 3 paragraphs
-	
+
 	for i := 0; i < minLen; i++ {
 		// Normalize and check if paragraphs are similar
 		norm1 := normalizeWhitespace(paragraphs1[i])
 		norm2 := normalizeWhitespace(paragraphs2[i])
-		
+
 		if norm1 == norm2 {
 			t.Logf("Paragraph %d matches exactly", i+1)
 		} else if strings.Contains(norm1, norm2) || strings.Contains(norm2, norm1) {
@@ -779,23 +779,23 @@ func compareWithReferenceJSON(t *testing.T, reference, goOutput map[string]inter
 	// Compare title
 	refTitle, hasRefTitle := reference["title"].(string)
 	goTitle, hasGoTitle := goOutput["title"].(string)
-	
+
 	if hasRefTitle && hasGoTitle {
 		t.Logf("Title comparison - Reference: %q, Go: %q", refTitle, goTitle)
-		
+
 		// The title should be similar (allow for minor differences)
-		assert.True(t, strings.Contains(refTitle, goTitle) || strings.Contains(goTitle, refTitle), 
+		assert.True(t, strings.Contains(refTitle, goTitle) || strings.Contains(goTitle, refTitle),
 			"Titles are not similar enough")
 	}
-	
+
 	// Compare byline if available
 	refByline, hasRefByline := reference["byline"].(string)
 	goByline, hasGoByline := goOutput["byline"].(string)
-	
+
 	if hasRefByline && hasGoByline {
 		t.Logf("Byline comparison - Reference: %q, Go: %q", refByline, goByline)
 	}
-	
+
 	// Compare content
 	// ReadabiliPy references may store content differently, adapt as needed
 	var refContent string
@@ -810,31 +810,31 @@ func compareWithReferenceJSON(t *testing.T, reference, goOutput map[string]inter
 			hasRefContent = true
 		}
 	}
-	
+
 	goContent, hasGoContent := goOutput["content"].(string)
-	
+
 	if hasRefContent && hasGoContent {
 		// Compare DOM structure rather than exact HTML string
 		compareDOMContent(t, refContent, goContent)
-		
+
 		// Check for important content elements
 		refDoc, _ := goquery.NewDocumentFromReader(strings.NewReader(refContent))
 		goDoc, _ := goquery.NewDocumentFromReader(strings.NewReader(goContent))
-		
+
 		// Extract plain text and compare
 		refText := refDoc.Text()
 		goText := goDoc.Text()
-		
+
 		// Check if the text content is roughly similar in length
 		refTextLen := len(refText)
 		goTextLen := len(goText)
 		textRatio := float64(goTextLen) / float64(refTextLen)
-		
-		t.Logf("Text content length - Reference: %d, Go: %d, Ratio: %.2f", 
+
+		t.Logf("Text content length - Reference: %d, Go: %d, Ratio: %.2f",
 			refTextLen, goTextLen, textRatio)
-		
+
 		// Check for reasonable similarity in length
-		assert.True(t, textRatio > 0.2 && textRatio < 10.0, 
+		assert.True(t, textRatio > 0.2 && textRatio < 10.0,
 			"Text length differs too much between reference and Go output")
 	}
 }
@@ -865,7 +865,7 @@ func calculateTextSimilarity(s1, s2 string) float64 {
 	// Convert to lowercase for comparison
 	s1 = strings.ToLower(s1)
 	s2 = strings.ToLower(s2)
-	
+
 	// Find the longer and shorter strings
 	var longer, shorter string
 	if len(s1) >= len(s2) {
@@ -875,12 +875,12 @@ func calculateTextSimilarity(s1, s2 string) float64 {
 		longer = s2
 		shorter = s1
 	}
-	
+
 	// If both strings are empty, they're identical
 	if len(longer) == 0 {
 		return 1.0
 	}
-	
+
 	// Calculate similarity based on character presence
 	charCount := 0
 	for _, char := range shorter {
@@ -888,7 +888,7 @@ func calculateTextSimilarity(s1, s2 string) float64 {
 			charCount++
 		}
 	}
-	
+
 	return float64(charCount) / float64(len(longer))
 }
 
@@ -917,7 +917,7 @@ func createTestHTML(t *testing.T, testCase string) string {
     </div>
 </body>
 </html>`
-	
+
 	case "Wikipedia":
 		return `<!DOCTYPE html>
 <html>
@@ -974,7 +974,7 @@ func createTestHTML(t *testing.T, testCase string) string {
     </div>
 </body>
 </html>`
-	
+
 	case "BlogPost":
 		return `<!DOCTYPE html>
 <html>
@@ -1021,7 +1021,7 @@ func createTestHTML(t *testing.T, testCase string) string {
     </footer>
 </body>
 </html>`
-	
+
 	case "NewsArticle":
 		return `<!DOCTYPE html>
 <html>
@@ -1117,7 +1117,7 @@ func createTestHTML(t *testing.T, testCase string) string {
     </footer>
 </body>
 </html>`
-	
+
 	case "ComplexLayout":
 		return `<!DOCTYPE html>
 <html>
@@ -1300,7 +1300,7 @@ func createTestHTML(t *testing.T, testCase string) string {
     </footer>
 </body>
 </html>`
-	
+
 	default:
 		t.Fatalf("Unknown test case: %s", testCase)
 		return ""

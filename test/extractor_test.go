@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mrjoshuak/readabiligo"
+	"github.com/Sagleft/readabiligo"
 )
 
 // TestExtractFromFile tests basic article extraction from a file
