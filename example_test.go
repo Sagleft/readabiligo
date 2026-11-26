@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/mrjoshuak/readabiligo"
+	"github.com/Sagleft/readabiligo"
 )
 
 func ExampleNew() {
@@ -46,7 +46,7 @@ func ExampleWithContentDigests() {
 func ExampleWithTimeout() {
 	// Create a new extractor with a custom timeout
 	ext := readabiligo.New(
-		readabiligo.WithTimeout(time.Second*60),
+		readabiligo.WithTimeout(time.Second * 60),
 	)
 
 	// Extract from an HTML string

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mrjoshuak/readabiligo"
+	"github.com/Sagleft/readabiligo"
 	"github.com/stretchr/testify/assert"
 )
 

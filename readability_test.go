@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mrjoshuak/readabiligo"
+	"github.com/Sagleft/readabiligo"
 )
 
 func TestExtractor(t *testing.T) {

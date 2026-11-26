@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mrjoshuak/readabiligo"
+	"github.com/Sagleft/readabiligo"
 )
 
 // OutputFormat represents the supported output formats for the extracted content.

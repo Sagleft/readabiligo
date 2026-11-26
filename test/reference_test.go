@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/mrjoshuak/readabiligo"
+	"github.com/Sagleft/readabiligo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -23,11 +23,11 @@ func TestComparisonWithPythonReference(t *testing.T) {
 
 	// Create map of test files - these match the test pairs from the Python project's test_article_extraction.py
 	testPairs := map[string]string{
-		"addictinginfo.html":   "addictinginfo.json",
-		"conservativehq.html":  "conservativehq.json",
-		"davidwolfe.html":      "davidwolfe.json",
-		"list_items.html":      "list_items.json",
-		"non_article.html":     "non_article.json",
+		"addictinginfo.html":  "addictinginfo.json",
+		"conservativehq.html": "conservativehq.json",
+		"davidwolfe.html":     "davidwolfe.json",
+		"list_items.html":     "list_items.json",
+		"non_article.html":    "non_article.json",
 	}
 
 	refDir := filepath.Join("data", "reference")
@@ -78,7 +78,7 @@ func TestComparisonWithPythonReference(t *testing.T) {
 			)
 			article, err := ex.ExtractFromHTML(string(htmlContent), nil)
 			require.NoError(t, err)
-			
+
 			// Prepare our output to compare
 			goOutput := map[string]interface{}{
 				"title":   article.Title,
@@ -165,15 +165,15 @@ func compareRefContent(t *testing.T, expected, actual string) {
 	t.Logf("Text content length: Python=%d, Go=%d, Ratio=%.2f", expectedLen, actualLen, ratio)
 
 	// More strict ratio requirement for reference tests
-	assert.True(t, ratio >= 0.7 && ratio <= 1.3, 
+	assert.True(t, ratio >= 0.7 && ratio <= 1.3,
 		"Text content length differs significantly: expected between 70%% and 130%% of Python, got %.0f%%", ratio*100)
 
 	// Check for significant content overlap
 	similarityScore := calculateRefTextSimilarity(expectedText, actualText)
 	t.Logf("Text similarity score: %.2f%%", similarityScore*100)
-	
+
 	// For reference tests, we expect higher similarity
-	assert.True(t, similarityScore >= 0.5, 
+	assert.True(t, similarityScore >= 0.5,
 		"Text content similarity is too low: expected at least 50%%, got %.0f%%", similarityScore*100)
 }
 
@@ -181,7 +181,7 @@ func compareRefContent(t *testing.T, expected, actual string) {
 func compareRefElementCounts(t *testing.T, expectedDoc, actualDoc *goquery.Document, selector, description string) {
 	expectedCount := expectedDoc.Find(selector).Length()
 	actualCount := actualDoc.Find(selector).Length()
-	
+
 	t.Logf("%s count: Python=%d, Go=%d", description, expectedCount, actualCount)
 
 	// Calculate ratio for comparison
@@ -195,18 +195,18 @@ func compareRefElementCounts(t *testing.T, expectedDoc, actualDoc *goquery.Docum
 		// Allow wider tolerance for fewer elements
 		var tolerance float64
 		if expectedCount < 5 {
-			tolerance = 0.5  // For small counts, allow 50% difference
+			tolerance = 0.5 // For small counts, allow 50% difference
 		} else if expectedCount < 10 {
-			tolerance = 0.3  // For medium counts, allow 30% difference
+			tolerance = 0.3 // For medium counts, allow 30% difference
 		} else {
-			tolerance = 0.2  // For large counts, only allow 20% difference
+			tolerance = 0.2 // For large counts, only allow 20% difference
 		}
-		
+
 		minRatio := 1.0 - tolerance
 		maxRatio := 1.0 + tolerance
-		
+
 		if ratio < minRatio || ratio > maxRatio {
-			t.Logf("%s counts differ significantly: expected between %.0f%% and %.0f%% of Python, got %.0f%%", 
+			t.Logf("%s counts differ significantly: expected between %.0f%% and %.0f%% of Python, got %.0f%%",
 				description, minRatio*100, maxRatio*100, ratio*100)
 		}
 	}
@@ -225,21 +225,21 @@ func calculateRefTextSimilarity(text1, text2 string) float64 {
 	// Split texts into words
 	words1 := strings.Fields(text1)
 	words2 := strings.Fields(text2)
-	
+
 	// Create maps for word counts
 	wordCount1 := make(map[string]int)
 	wordCount2 := make(map[string]int)
-	
+
 	// Count words in text1
 	for _, word := range words1 {
 		wordCount1[word]++
 	}
-	
+
 	// Count words in text2
 	for _, word := range words2 {
 		wordCount2[word]++
 	}
-	
+
 	// Calculate intersection size
 	var intersection float64
 	for word, count1 := range wordCount1 {
@@ -252,7 +252,7 @@ func calculateRefTextSimilarity(text1, text2 string) float64 {
 			}
 		}
 	}
-	
+
 	// Calculate union size
 	var union float64
 	for _, count := range wordCount1 {
@@ -263,7 +263,7 @@ func calculateRefTextSimilarity(text1, text2 string) float64 {
 			union += float64(count)
 		}
 	}
-	
+
 	// Return Jaccard similarity (intersection / union)
 	if union == 0 {
 		return 0.0

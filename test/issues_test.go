@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/mrjoshuak/readabiligo"
-	"github.com/mrjoshuak/readabiligo/internal/readability"
+	"github.com/Sagleft/readabiligo"
+	"github.com/Sagleft/readabiligo/internal/readability"
 	"github.com/stretchr/testify/assert"
 )
 

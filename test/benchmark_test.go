@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mrjoshuak/readabiligo"
+	"github.com/Sagleft/readabiligo"
 )
 
 // BenchmarkDefaultExtraction benchmarks the entire extraction process with default options
@@ -26,7 +26,7 @@ func BenchmarkDefaultExtraction(b *testing.B) {
 		{"Reference", "real_world/wikipedia_go.html", "type"},
 		{"Article", "real_world/bbc_news.html", "type"},
 		{"Technical", "real_world/mdn_js_intro.html", "type"},
-		
+
 		// Edge cases
 		{"NestedContent", "edge_cases/nested_content_test.html", "edge"},
 		{"TableLayout", "edge_cases/table_layout_test.html", "edge"},
@@ -89,7 +89,7 @@ func BenchmarkContentTypeAwareExtraction(b *testing.B) {
 		// Create two sub-benchmarks for each case:
 		// 1. With auto-detection
 		// 2. With explicit type
-		
+
 		b.Run(bc.name+"_AutoDetect", func(b *testing.B) {
 			// Get the test data file
 			testFile := filepath.Join("data", bc.filename)
@@ -165,10 +165,10 @@ func BenchmarkContentTypeAwareExtraction(b *testing.B) {
 func BenchmarkFeatureOverhead(b *testing.B) {
 	// Define feature combinations to test
 	features := []struct {
-		name                 string
-		contentDigests      bool
-		nodeIndexes         bool
-		preserveLinks       bool
+		name           string
+		contentDigests bool
+		nodeIndexes    bool
+		preserveLinks  bool
 	}{
 		{"NoFeatures", false, false, false},
 		{"ContentDigests", true, false, false},
@@ -330,8 +330,8 @@ func BenchmarkMemoryUsage(b *testing.B) {
 		name       string
 		bufferSize int
 	}{
-		{"SmallBuffer", 64 * 1024},       // 64KB
-		{"DefaultBuffer", 1024 * 1024},   // 1MB (default)
+		{"SmallBuffer", 64 * 1024},        // 64KB
+		{"DefaultBuffer", 1024 * 1024},    // 1MB (default)
 		{"LargeBuffer", 10 * 1024 * 1024}, // 10MB
 	}
 

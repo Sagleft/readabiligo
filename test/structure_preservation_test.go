@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/mrjoshuak/readabiligo"
+	"github.com/Sagleft/readabiligo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -58,19 +58,19 @@ func TestStructurePreservation(t *testing.T) {
 			// Measure the elements
 			articleDoc, err := goquery.NewDocumentFromReader(strings.NewReader(article.Content))
 			require.NoError(t, err)
-			
+
 			// Count structure elements
 			paragraphCount := articleDoc.Find("p").Length()
 			headingCount := articleDoc.Find("h1, h2, h3, h4, h5, h6").Length()
 			listCount := articleDoc.Find("ul, ol").Length()
 			listItemCount := articleDoc.Find("li").Length()
 
-			t.Logf("Structure elements: %d paragraphs, %d headings, %d lists, %d list items", 
+			t.Logf("Structure elements: %d paragraphs, %d headings, %d lists, %d list items",
 				paragraphCount, headingCount, listCount, listItemCount)
 
 			// Verify minimum expectations
 			assert.True(t, paragraphCount > 0, "Should have at least one paragraph")
-			
+
 			if listItemCount > 0 {
 				assert.True(t, listCount > 0, "Should have lists if list items are present")
 			}

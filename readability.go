@@ -4,7 +4,7 @@
 //
 // Usage:
 //
-//	import "github.com/mrjoshuak/readabiligo"
+//	import "github.com/Sagleft/readabiligo"
 //
 //	// Create extractor
 //	extractor := readabiligo.New()
@@ -22,7 +22,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/mrjoshuak/readabiligo/internal/readability"
+	"github.com/Sagleft/readabiligo/internal/readability"
 )
 
 // Extractor defines the interface for article extraction.
@@ -38,7 +38,6 @@ type Extractor interface {
 // Option represents a function that modifies ExtractionOptions.
 // This follows the functional options pattern for configuring the extractor.
 type Option func(*ExtractionOptions)
-
 
 // WithContentDigests enables or disables content digest attributes.
 // Content digests are SHA256 hashes of the content, which can be used to
@@ -131,7 +130,6 @@ func (e *articleExtractor) ExtractFromHTML(html string, options *ExtractionOptio
 		var article *Article
 		var err error
 
-		
 		// Use pure Go implementation
 		article, err = e.extractUsingPureGo(html, options)
 
@@ -172,13 +170,13 @@ func (e *articleExtractor) ExtractFromReader(r io.Reader, options *ExtractionOpt
 func (e *articleExtractor) extractUsingPureGo(html string, options *ExtractionOptions) (*Article, error) {
 	// Convert our options to internal options
 	internalOptions := &readability.ExtractionOptions{
-		ContentDigests:        options.ContentDigests,
-		NodeIndexes:           options.NodeIndexes,
-		MaxBufferSize:         options.MaxBufferSize,
-		Timeout:               int(options.Timeout.Seconds()),
+		ContentDigests:         options.ContentDigests,
+		NodeIndexes:            options.NodeIndexes,
+		MaxBufferSize:          options.MaxBufferSize,
+		Timeout:                int(options.Timeout.Seconds()),
 		PreserveImportantLinks: options.PreserveImportantLinks,
-		DetectContentType:     options.DetectContentType,
-		ContentType:           readability.ContentType(options.ContentType),
+		DetectContentType:      options.DetectContentType,
+		ContentType:            readability.ContentType(options.ContentType),
 	}
 
 	// Use our pure Go Readability implementation
